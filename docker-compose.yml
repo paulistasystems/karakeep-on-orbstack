@@ -1,0 +1,31 @@
+
+
+services:
+  web:
+    image: ghcr.io/karakeep-app/karakeep:${KARAKEEP_VERSION:-release}
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    volumes:
+      - ./data/karakeep:/app/data
+    environment:
+      - DATA_DIR=/app/data
+    depends_on:
+      - meilisearch
+      - chrome
+
+  meilisearch:
+    image: getmeili/meilisearch:v1.13.3
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ./data/meilisearch:/meili_data
+    command: meilisearch --master-key=${MEILI_MASTER_KEY} --no-analytics --max-indexing-memory 1000000000 --http-addr "0.0.0.0:7700"
+
+  chrome:
+    image: browserless/chrome:latest
+    restart: unless-stopped
+    shm_size: 2gb # Required for large screenshots
