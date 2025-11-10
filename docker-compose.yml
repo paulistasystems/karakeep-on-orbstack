@@ -37,6 +37,8 @@ services:
       - --remote-debugging-address=0.0.0.0
       - --remote-debugging-port=9222
       - --hide-scrollbars
+    ports:
+      - 9222:9222
     deploy:
       resources:
         limits:
@@ -64,6 +66,8 @@ services:
       - ./entrypoint.sh:/usr/local/bin/custom-entrypoint.sh
     ports:
       - 11434:11434
+    env_file:
+      - .env
     entrypoint: ["/usr/local/bin/custom-entrypoint.sh"]
 
 volumes:
